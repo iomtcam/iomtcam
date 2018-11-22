@@ -491,7 +491,7 @@ function startApp() {
   token = tokenContract.at(contractAddress);
   cam1Contract = web3.eth.contract(cam1abi);
   cam1 = cam1Contract.at(cam1Address);
-  event = token.calculateTime();
+  event = cam1.calculateTime();
   
   web3.eth.getAccounts(function(e,r){
     document.getElementById('accountAddr').innerHTML = getLink(r[0]);
