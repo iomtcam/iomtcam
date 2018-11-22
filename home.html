@@ -513,10 +513,11 @@ function sendToken(){
 	});
 }
 function watchVideo(){
+    var videoTime = watchTime;
     openWin = window.open('http://www.naver.com','_blank');
     setTimeout(function() {
        openWin.close();
-   },watchTime);
+   },videoTime);
 }
 </script>
 </html>
