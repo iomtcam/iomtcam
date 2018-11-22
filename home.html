@@ -505,7 +505,7 @@ function sendToken(){
 	var tokenAmount = document.getElementById('tokenAmount').value;
 	token.approveAndCall('0x45d9c9d461188c3b5261518e42f37a37bbf257d0',tokenAmount,0x000,function(e,r){console.log(r);});
 	event.watch(function(e,r){
-		console.log(r.args.second);
+		console.log(r.args.second.c[0]);
 	});
 }
 
