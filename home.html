@@ -509,6 +509,7 @@ function sendToken(){
 	event.watch(function(e,r){
 		console.log(r.args.second.c[0]);
 		watchTime = r.args.second.c[0];
+		console.log(typeof watchTime);
 		event.stopWatching();
 	});
 }
