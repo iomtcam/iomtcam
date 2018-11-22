@@ -469,7 +469,7 @@ var cam1Contract;
 var cam1;
 var event;
 var openWin;
-var watchTime=0;
+var watchTime;
 var imageURL = 'http://tourshopping.interparktour.com/uploads/cee2938ac09d014c13c05d77f72d3b65.JPG';
 var isDisplayed = 1;
 var blockNum;
@@ -494,7 +494,7 @@ function startApp() {
   cam1Contract = web3.eth.contract(cam1abi);
   cam1 = cam1Contract.at(cam1Address);
   event = cam1.calculateTime();
-  
+  watchTime = 0;
   web3.eth.getAccounts(function(e,r){
     document.getElementById('accountAddr').innerHTML = getLink(r[0]);
   });
