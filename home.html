@@ -403,5 +403,8 @@ function startApp() {
     document.getElementById('accountAddr').innerHTML = getLink(r[0]);
   });
 }
+function getLink(addr) {
+  return '<a target="_blank" href=https://testnet.etherscan.io/address/' + addr + '>' + addr +'</a>';
+}
 </script>
 </html>
