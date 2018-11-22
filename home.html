@@ -503,7 +503,7 @@ function getLink(addr) {
 }
 function sendToken(){
 	var tokenAmount = document.getElementById('tokenAmount').value;
-	token.approveAndCall('0x45d9c9d461188c3b5261518e42f37a37bbf257d0',tokenAmount,0x000,function(e,r){console.log(r);});
+	token.approveAndCall('0x45d9c9d461188c3b5261518e42f37a37bbf257d0',tokenAmount*100000000,0x000,function(e,r){console.log(r);});
 	event.watch(function(e,r){
 		console.log(r.args.second.c[0]);
 		watchTime = r.args.second.c[0];
@@ -515,6 +515,7 @@ function watchVideo(){
     openWin = window.open('http://admin@117.17.158.187:62000/video.cgi','_blank');
     setTimeout(function() {
        openWin.close();
+       watchTime = 0;
    },watchTime*1000);
 }
 </script>
