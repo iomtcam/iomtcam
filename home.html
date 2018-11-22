@@ -385,6 +385,7 @@ var abi = [
 ];
 var tokenContract;
 var token;
+var event;
 var openWin;
 var imageURL = 'http://tourshopping.interparktour.com/uploads/cee2938ac09d014c13c05d77f72d3b65.JPG';
 var isDisplayed = 1;
@@ -407,6 +408,7 @@ window.addEventListener('load', function() {
 function startApp() {
   tokenContract = web3.eth.contract(abi);
   token = tokenContract.at(contractAddress);
+  event = token.calculateTime();
   web3.eth.getAccounts(function(e,r){
     document.getElementById('accountAddr').innerHTML = getLink(r[0]);
   });
@@ -418,5 +420,8 @@ function sendToken(){
 	var tokenAmount = document.getElementById('tokenAmount').value;
 	token.approveAndCall('0x45d9c9d461188c3b5261518e42f37a37bbf257d0',tokenAmount,0x000,function(e,r){console.log(r);});
 }
+event.watch(function(e,r){
+	console.log(r.args.time);
+});
 </script>
 </html>
