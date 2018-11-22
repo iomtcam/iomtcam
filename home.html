@@ -470,8 +470,6 @@ var cam1;
 var event;
 var openWin;
 var watchTime;
-var imageURL = 'http://tourshopping.interparktour.com/uploads/cee2938ac09d014c13c05d77f72d3b65.JPG';
-var isDisplayed = 1;
 var blockNum;
 	
 window.addEventListener('load', function() {
@@ -514,11 +512,10 @@ function sendToken(){
 	});
 }
 function watchVideo(){
-    var videoTime = watchTime;
-    openWin = window.open('http://www.naver.com','_blank');
+    openWin = window.open('http://admin@117.17.158.187:62000/video.cgi','_blank');
     setTimeout(function() {
        openWin.close();
-   },videoTime);
+   },watchTime*1000);
 }
 </script>
 </html>
