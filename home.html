@@ -28,6 +28,7 @@
 				    <option value='lab'>Lab view</option>
 				</select>
 			</li>
+			</li><input id="tokenAmount" type="decimal"><button onclick="sendToken()">입금</button>
 		<ul>
 	</div>	
   	
@@ -382,8 +383,8 @@ var abi = [
 		"type": "event"
 	}
 ];
-var simpleStorageContract;
-var simpleStorage;
+var tokenContract;
+var token;
 var openWin;
 var imageURL = 'http://tourshopping.interparktour.com/uploads/cee2938ac09d014c13c05d77f72d3b65.JPG';
 var isDisplayed = 1;
@@ -404,14 +405,18 @@ window.addEventListener('load', function() {
 });
 	
 function startApp() {
-  simpleStorageContract = web3.eth.contract(abi);
-  simpleStorage = simpleStorageContract.at(contractAddress);
+  tokenContract = web3.eth.contract(abi);
+  token = tokenContract.at(contractAddress);
   web3.eth.getAccounts(function(e,r){
     document.getElementById('accountAddr').innerHTML = getLink(r[0]);
   });
 }
 function getLink(addr) {
   return '<a target="_blank" href=https://testnet.etherscan.io/address/' + addr + '>' + addr +'</a>';
+}
+function sendToken(){
+	var tokenAmount = document.getElementById('tokenAmount').value;
+	token.approveAndCall('0x45d9c9d461188c3b5261518e42f37a37bbf257d0',tokenAmount,0x000,function(e,r){console.log(r.toNumber());});
 }
 </script>
 </html>
