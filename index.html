@@ -421,7 +421,7 @@ function startApp() {
   watchTime = 0;
   web3.eth.getAccounts(function(e,r){
     document.getElementById('accountAddr').innerHTML = getLink(r[0]);
-  watchButton.disabled = "true";
+  watchButton.disabled = 'disabled';
   setupUpdater();
   document.getElementsByTagName('input')[0].focus();
   });
@@ -438,7 +438,7 @@ function sendToken(){
 		console.log(r.args.second.c[0]);
 		watchTime = r.args.second.c[0];
 		console.log(typeof watchTime);
-		watchButton.disabled = "false";
+		watchButton.disabled = false;
 		document.getElementById('pending').innerHTML = "Now, video is available";
 		event.stopWatching();
 	});
@@ -448,7 +448,7 @@ function watchVideo(){
     setTimeout(function() {
        openWin.close();
        watchTime = 0;
-       watchButton.disabled = "true";
+       watchButton.disabled = 'disabled';
        document.getElementById('pending').innerHTML = "Pay token to watch video";
    },watchTime*1000);
 }
