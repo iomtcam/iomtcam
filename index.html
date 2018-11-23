@@ -1,689 +1,956 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="CACHE-CONTROL" content="NO-CACHE">
-    <title>IoMT</title>
-    <style>
-      * {padding: 0; margin: 0;}
-      body {background-color:#8bcdff;}
-      .center {
-        height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      } 
-	  </style>
-  </head>
-  <body>
-	<div class="center">
-		
-		<ul>
-			<li><h3>IoMT Camera service</h3></li>
-			<li> My account addrress : <span id="accountAddr"></span></li>
-			<li>
-				<select id='selectCam' onChange='camSelected()'>
-				    <option value='' selected>-- Choose camera --</option>
-				    <option value='campus'>Campus view</option>
-				    <option value='lab'>Lab view</option>
-				</select>
-			</li>
-			<li><span id='tokenPerSecond'></span>
-			<li><input id="videoTime" type="decimal"><span>seconds</span></li>
-			<li><span id='tokenAmount'></span><span> MTT</span><button onclick="sendToken()">Send Token</button></li>
-			<li><span id='pending'>Pay token to watch video</span></li>
-			<li><button id='watchButton' onclick="watchVideo()" disable="">Watch video</button></li>
-		<ul>
-	</div>	
-  	
-  </body>
-<script src="https://cdn.rawgit.com/ethereum/web3.js/develop/dist/web3.js"></script>
-<!-- script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script -->
-<script>
-var contractAddress = '0x68a164c76eec4d7b8064d5a1df7e9e931ef95a78';
-var camAddress;
-var abi = [
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "name",
-		"outputs": [
-			{
-				"name": "",
-				"type": "string"
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="CACHE-CONTROL" content="NO-CACHE">
+		<title>IoMT</title>
+		<link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300" rel="stylesheet">
+		<style>
+			body {
+				background-color: #000;
+				font-family: 'Open Sans Condensed', sans-serif;
 			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "spender",
-				"type": "address"
-			},
-			{
-				"name": "tokens",
-				"type": "uint256"
+			#title {
+				text-align:center;
+				font-size: 100px;
+				text-weight: bold;
+				color: #fff;
 			}
-		],
-		"name": "approve",
-		"outputs": [
-			{
-				"name": "success",
-				"type": "bool"
+			#container {
+				background-image: url('https://raw.githubusercontent.com/iomtcam/iomtcam.github.io/master/space.jpg');
+				overflow-x: hidden ! important;
+				width: 940px;
+				margin: 0px auto;
+				padding: 20px;
+				border: none;
+				background-color: #fff;
+				height:90vh;
 			}
-		],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "totalSupply",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
+			#header {
+				text-align:center;
+				padding: 20px;
+				margin-bottom: 20px;
+				margin-top:80px;
+				border: none;
 			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "from",
-				"type": "address"
-			},
-			{
-				"name": "to",
-				"type": "address"
-			},
-			{
-				"name": "tokens",
-				"type": "uint256"
+			#content {
+				padding: 20px;
+				margin-bottom: 20px;
+				border: none;
 			}
-		],
-		"name": "transferFrom",
-		"outputs": [
-			{
-				"name": "success",
-				"type": "bool"
+			table {
+				border-radius: 15px;
+				width: 100%;
+				border: 1px #000;
 			}
-		],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "decimals",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint8"
+			th, td {
+				height: 40px;
+				border-radius: 0px;
+				background-color: #fff;
+				border: 1px #000;
+				padding: 10px;
 			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "tokenOwner",
-				"type": "address"
+			#selectCam {
+				width: 100%;
+				height: 100%;
+				border-radius: 15px;
 			}
-		],
-		"name": "balanceOf",
-		"outputs": [
-			{
-				"name": "balance",
-				"type": "uint256"
+			option {
+				height: 100%;
 			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [],
-		"name": "acceptOwnership",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "owner",
-		"outputs": [
-			{
-				"name": "",
-				"type": "address"
+			.menubar{
+				border:none;
+				border-radius: 15px;
+				border:0px;
+				margin:0px;
+				padding:0px;
+				font-size:60px;
+				font-weight:bold;
+				
 			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "symbol",
-		"outputs": [
-			{
-				"name": "",
-				"type": "string"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "to",
-				"type": "address"
-			},
-			{
-				"name": "tokens",
-				"type": "uint256"
-			}
-		],
-		"name": "transfer",
-		"outputs": [
-			{
-				"name": "success",
-				"type": "bool"
-			}
-		],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "spender",
-				"type": "address"
-			},
-			{
-				"name": "tokens",
-				"type": "uint256"
-			},
-			{
-				"name": "data",
-				"type": "bytes"
-			}
-		],
-		"name": "approveAndCall",
-		"outputs": [
-			{
-				"name": "success",
-				"type": "bool"
-			}
-		],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "newOwner",
-		"outputs": [
-			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "tokenAddress",
-				"type": "address"
-			},
-			{
-				"name": "tokens",
-				"type": "uint256"
-			}
-		],
-		"name": "transferAnyERC20Token",
-		"outputs": [
-			{
-				"name": "success",
-				"type": "bool"
-			}
-		],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "tokenOwner",
-				"type": "address"
-			},
-			{
-				"name": "spender",
-				"type": "address"
-			}
-		],
-		"name": "allowance",
-		"outputs": [
-			{
-				"name": "remaining",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_newOwner",
-				"type": "address"
-			}
-		],
-		"name": "transferOwnership",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
-		"payable": true,
-		"stateMutability": "payable",
-		"type": "fallback"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"name": "_from",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"name": "_to",
-				"type": "address"
-			}
-		],
-		"name": "OwnershipTransferred",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"name": "from",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"name": "to",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"name": "tokens",
-				"type": "uint256"
-			}
-		],
-		"name": "Transfer",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"name": "tokenOwner",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"name": "spender",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"name": "tokens",
-				"type": "uint256"
-			}
-		],
-		"name": "Approval",
-		"type": "event"
-	}
-];
-var camAbi;
-var tokenContract;
-var token;
-var camContract;
-var cam;
-var event;
-var openWin;
-var watchTime;
-var blockNum;
-var videoURL;
-var costPerSecond;
-var watchButton=document.getElementById('watchButton');
-	
-window.addEventListener('load', function() {
-  // Checking if Web3 has been injected by the browser (Mist/MetaMask)
-  if (typeof web3 !== 'undefined') {
-    // Use Mist/MetaMask's provider
-    window.web3 = new Web3(web3.currentProvider);
-  } else {
-    console.log('No web3? You should consider trying MetaMask!')
-    // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
-    window.web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-  }
-  // Now you can start your app & access web3 freely:
-  startApp();
-});
-	
-function startApp() {
-  tokenContract = web3.eth.contract(abi);
-  token = tokenContract.at(contractAddress);
-  watchTime = 0;
-  web3.eth.getAccounts(function(e,r){
-    document.getElementById('accountAddr').innerHTML = getLink(r[0]);
-  watchButton.disabled = 'disabled';
-  setupUpdater();
-  document.getElementsByTagName('input')[0].focus();
-  });
-  
-}
-function getLink(addr) {
-  return '<a target="_blank" href=https://testnet.etherscan.io/address/' + addr + '>' + addr +'</a>';
-}
-function sendToken(){
-	var tokenAmount = Number(document.getElementById('tokenAmount').innerText);
-	token.approveAndCall(camAddress,tokenAmount*1000000000,0x000,function(e,r){console.log(r);});
-	console.log(tokenAmount*1000000000);
-	document.getElementById('pending').innerHTML = "pending";
-	event.watch(function(e,r){
-		console.log(r.args.second.c[0]);
-		watchTime = r.args.second.c[0];
-		console.log(typeof watchTime);
-		watchButton.disabled = false;
-		document.getElementById('pending').innerHTML = "Now, video is available";
-		event.stopWatching();
-	});
-}
-function watchVideo(){
-    openWin = window.open(videoURL,'_blank');
-    setTimeout(function() {
-       openWin.close();
-       watchTime = 0;
-       watchButton.disabled = 'disabled';
-       document.getElementById('pending').innerHTML = "Pay token to watch video";
-   },watchTime*1000);
-}
 
-function camSelected(){
-	document.getElementById('videoTime').value = "";
-	document.getElementById('tokenAmount').innerText = "";
-	if(document.getElementById("selectCam").value == 'campus'){
-		cam1Selected();
-	}
-	else if(document.getElementById("selectCam").value == 'lab'){
-		cam2Selected();
-	}
-	else{
-		camNone();
-	}
-     
-}
-	
-function cam1Selected(){
-  camAddress='0x45d9c9d461188c3b5261518e42f37a37bbf257d0';
-  camAbi=[
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "getBalance",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
+			.menubar ul{
+			    text-align: center;
+				background: #fff;
+				width:70%;
+				list-style:none;
+				margin: auto auto;
+				padding:0;
+				position: relative;
+				border-radius: 25px;
 			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"name": "payers",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_from",
-				"type": "address"
-			},
-			{
-				"name": "_value",
-				"type": "uint256"
-			},
-			{
-				"name": "_token",
-				"type": "address"
-			},
-			{
-				"name": "_extraData",
-				"type": "bytes"
-			}
-		],
-		"name": "receiveApproval",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"name": "tokenAmount",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"name": "second",
-				"type": "uint256"
-			}
-		],
-		"name": "calculateTime",
-		"type": "event"
-	}
-];
-  camContract = web3.eth.contract(camAbi);
-  cam = camContract.at(camAddress);
-  event = cam.calculateTime();
-  costPerSecond=0.1;
-  videoURL = "http://admin@117.17.158.187:62000/video.cgi";
-  document.getElementById('tokenPerSecond').innerHTML = costPerSecond + "MTT per second";
-}
 
-function cam2Selected(){
-  camAddress='0x3a42586e04880d5d6e3c4dee2cfaed6fe7d2b4fd';
-  camAbi=[
-	{
-		"constant": false,
-		"inputs": [
+			.menubar li{
+				height:100%;
+				width:100%;
+				padding:0px;
+				top: 50%;
+				background: #fff;
+				position: relative;
+			}
+
+			.menubar li a{
+				background: #fff;
+				color:#5b5b5b;
+				display:block;
+				font-weight:normal;
+				line-height:50px;
+				margin:0px;
+				padding:10px 30px;
+				text-align:center;
+				text-decoration:none;
+			}
+
+			.menubar li a:hover, .menubar ul li:hover a{
+				animation-name: hoverSelect;
+				animation-duration: 0.5s;
+				background: #5b5b5b;
+				color:#fff;
+			}
+			
+			@keyframes hoverSelect {
+			  from {
+				background: #fff;
+				color:#5b5b5b;
+			  }
+			  to {
+				background: #5b5b5b;
+				color:#fff;
+			  }
+			}
+
+			.menubar li ul{
+				background: rgb(109,109,109);
+				height:auto;
+				padding:0px;
+				margin:0px;
+				border:0px;
+				opacity:0;
+				position:absolute;
+				width:100%;
+				z-index:200;
+				/*top:1em;
+				/*left:0;*/
+			}
+
+			.menubar li:hover ul{
+				animation-name: menuAnimation;
+				animation-duration: 0.5s;
+				opacity:1;
+				height:auto;
+			}
+			@keyframes menuAnimation {
+			  from {
+				opacity:0;
+				height:0;
+			  }
+			  to {
+				opacity:1;
+				height:auto;
+			  }
+			}
+			.menubar li li {
+				background: #5b5b5b;
+				display:block;
+				margin:0px;
+				padding:0px;
+				width:100%;
+			}
+
+			.menubar li:hover li a{
+				background:none;
+			}
+
+			.menubar li ul a{
+				display:block;
+				height:52px;
+				font-style:normal;
+				font-weight:normal;
+				margin:0px;
+				padding:0px 10px 0px 15px;
+				font-size:27px;
+				text-align: center;
+			}
+
+			.menubar li ul a:hover, .menubar li ul li:hover a{
+				animation-name: selectAnimation;
+				animation-duration: 0.3s;
+				background: #fff;
+				border:0px;
+				color:#5b5b5b;
+				text-decoration:none;
+			}
+			@keyframes selectAnimation {
+			  from {
+				background: #5b5b5b;
+				color:#fff;
+			  }
+			  to {
+				background: #fff;
+				color:#5b5b5b;
+			  }
+			}
+
+			.menubar p{
+				clear:left;
+			}
+			
+			#selectedContent{
+				text-align:center;
+				font-size: 30px;
+				color: #fff;
+				border: none;
+				opacity: 0;
+			}
+			
+			@keyframes mainContentAnimation {
+			  from {
+				opacity: 0;
+			  }
+			  to {
+				opacity: 1;
+			  }
+			}
+			
+			#videoTime{
+				font-family: 'Open Sans Condensed', sans-serif;
+				font-size: 30px;
+				border: 0px 0px 1px 0px;
+				height: 34px;
+				color: #fff;
+				border-color: rgba(0,0,0,0);
+				border-bottom-color: #fff;
+				-webkit-box-shadow: none;
+				box-shadow: none;
+				outline: 0;
+				background: rgba(0,0,0,0);
+			}
+			#videoTime:focus{
+				box-shadow: none;
+				-webkit-box-shadow: none;
+				outline: none;
+			}
+			
+			button{
+				margin-top: 3px;
+				font-family: 'Open Sans Condensed', sans-serif;
+				font-size: 30px;
+				border: 3px
+				border-radius: 15px;
+				height: 34px;
+				color: #fff;
+				border-color: #fff;
+				-webkit-box-shadow: none;
+				box-shadow: none;
+				outline: 0;
+				background: rgba(0,0,0,0);
+			}
+
+		</style>
+	</head>
+	<body>
+		<div id='container'>
+			<div id='header'>
+				<span id='title'>IoMT Camera service</span>
+				<!--<img style="-webkit-user-select: none;" src="http://117.17.158.187:62000/video.cgi">-->
+			</div>
+			<div id='content'>
+				<div class="menubar">
+				   <ul>
+					  <li><a href="#" id="current">Select a camera</a>
+						 <ul>
+						   <li><a href="#" onclick="cam1Selected();">Campus view</a></li>
+						   <li><a href="#" onclick="cam2Selected();">Lab view</a></li>
+						 </ul>
+					  </li>
+				   </ul>
+				</div>
+				<div id='selectedContent'>
+					<span>Thumbnail</span><br>
+					<span><img style="-webkit-user-select: none;" id='imgg' src='http://117.17.158.187:62000/image/jpeg.cgi' width="40%"></span><br>
+					<span id='tokenPerSecond'></span><span>MTT per second</span><br>
+					<span>I want to watch for</span><input id='videoTime' type="text"><span>seconds</span><br>
+					<span>And it costs </span><span id='tokenAmount'> </span><span> MTT</span><button onclick="sendToken()">Send Token</button><br>
+				</div>
+				<!--<table id='table'>
+					<tr>
+						<td>
+							<select id='selectCam' onChange='camSelected()'>
+								<option value='' selected>-- Choose camera --</option>
+								<option value='campus'>Campus view</option>
+								<option value='lab'>Lab view</option>
+							</select>
+						</td>
+						<td>
+							<span id='tokenPerSecond'></span>
+						</td>
+					</tr>
+					<tr>
+						<td><input id="videoTime" type="decimal"></td><td><span>seconds</span></td>
+					</tr>
+					<tr><td><span id='tokenAmount'></span><span> MTT</span></td><td><button onclick="sendToken()">Send Token</button></td></tr>
+					<tr><td></td><td><button id='watchButton' onclick="watchVideo()" disable="">Watch video</button></td></tr>
+				</table>-->
+			 </div>
+		</div>	
+	</body>
+	<script src="https://cdn.rawgit.com/ethereum/web3.js/develop/dist/web3.js"></script>
+	<!-- script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script -->
+	<script>
+		var contractAddress = '0x68a164c76eec4d7b8064d5a1df7e9e931ef95a78';
+		var camAddress;
+		var abi = [
 			{
-				"name": "_from",
-				"type": "address"
+				"constant": true,
+				"inputs": [],
+				"name": "name",
+				"outputs": [
+					{
+						"name": "",
+						"type": "string"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
 			},
 			{
-				"name": "_value",
-				"type": "uint256"
+				"constant": false,
+				"inputs": [
+					{
+						"name": "spender",
+						"type": "address"
+					},
+					{
+						"name": "tokens",
+						"type": "uint256"
+					}
+				],
+				"name": "approve",
+				"outputs": [
+					{
+						"name": "success",
+						"type": "bool"
+					}
+				],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
 			},
 			{
-				"name": "_token",
-				"type": "address"
+				"constant": true,
+				"inputs": [],
+				"name": "totalSupply",
+				"outputs": [
+					{
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
 			},
 			{
-				"name": "_extraData",
-				"type": "bytes"
-			}
-		],
-		"name": "receiveApproval",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"name": "tokenAmount",
-				"type": "uint256"
+				"constant": false,
+				"inputs": [
+					{
+						"name": "from",
+						"type": "address"
+					},
+					{
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"name": "tokens",
+						"type": "uint256"
+					}
+				],
+				"name": "transferFrom",
+				"outputs": [
+					{
+						"name": "success",
+						"type": "bool"
+					}
+				],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
 			},
 			{
-				"indexed": false,
-				"name": "second",
-				"type": "uint256"
-			}
-		],
-		"name": "calculateTime",
-		"type": "event"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "getBalance",
-		"outputs": [
+				"constant": true,
+				"inputs": [],
+				"name": "decimals",
+				"outputs": [
+					{
+						"name": "",
+						"type": "uint8"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
 			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
+				"constant": true,
+				"inputs": [
+					{
+						"name": "tokenOwner",
+						"type": "address"
+					}
+				],
+				"name": "balanceOf",
+				"outputs": [
+					{
+						"name": "balance",
+						"type": "uint256"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
 			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"name": "payers",
-		"outputs": [
+				"constant": false,
+				"inputs": [],
+				"name": "acceptOwnership",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
 			{
-				"name": "",
-				"type": "uint256"
+				"constant": true,
+				"inputs": [],
+				"name": "owner",
+				"outputs": [
+					{
+						"name": "",
+						"type": "address"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [],
+				"name": "symbol",
+				"outputs": [
+					{
+						"name": "",
+						"type": "string"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"name": "tokens",
+						"type": "uint256"
+					}
+				],
+				"name": "transfer",
+				"outputs": [
+					{
+						"name": "success",
+						"type": "bool"
+					}
+				],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"name": "spender",
+						"type": "address"
+					},
+					{
+						"name": "tokens",
+						"type": "uint256"
+					},
+					{
+						"name": "data",
+						"type": "bytes"
+					}
+				],
+				"name": "approveAndCall",
+				"outputs": [
+					{
+						"name": "success",
+						"type": "bool"
+					}
+				],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [],
+				"name": "newOwner",
+				"outputs": [
+					{
+						"name": "",
+						"type": "address"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"name": "tokenAddress",
+						"type": "address"
+					},
+					{
+						"name": "tokens",
+						"type": "uint256"
+					}
+				],
+				"name": "transferAnyERC20Token",
+				"outputs": [
+					{
+						"name": "success",
+						"type": "bool"
+					}
+				],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"name": "tokenOwner",
+						"type": "address"
+					},
+					{
+						"name": "spender",
+						"type": "address"
+					}
+				],
+				"name": "allowance",
+				"outputs": [
+					{
+						"name": "remaining",
+						"type": "uint256"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"name": "_newOwner",
+						"type": "address"
+					}
+				],
+				"name": "transferOwnership",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"payable": true,
+				"stateMutability": "payable",
+				"type": "fallback"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"name": "_from",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"name": "_to",
+						"type": "address"
+					}
+				],
+				"name": "OwnershipTransferred",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"name": "from",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"name": "tokens",
+						"type": "uint256"
+					}
+				],
+				"name": "Transfer",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"name": "tokenOwner",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"name": "spender",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"name": "tokens",
+						"type": "uint256"
+					}
+				],
+				"name": "Approval",
+				"type": "event"
 			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	}
-];
-  camContract = web3.eth.contract(camAbi);
-  cam = camContract.at(camAddress);
-  event = cam.calculateTime();
-  costPerSecond=0.2;
-  videoURL = "http://admin@117.17.158.187:63000/video.cgi";
-  document.getElementById('tokenPerSecond').innerHTML = costPerSecond + "MTT per second";
-}
-	
-function camNone(){
-  camAddress="";
-  camAbi="";
-  camContract = "";
-  cam = "";
-  event = "";
-  costPerSecond=1;
-  document.getElementById('tokenPerSecond').innerHTML = "";
-}
-function set(el,text){
- while(el.firstChild)el.removeChild(el.firstChild);
- el.appendChild(document.createTextNode(text))}
- 
-/* setupUpdater will be called once, on page load.
- */
- 
-function setupUpdater(){
- var input=document.getElementsByTagName('input')[0]
-   , orig=document.getElementById('tokenAmount')
-   , oldText=input.value
-   , timeout=null;
- 
-/* handleChange is called 50ms after the user stops 
-   typing. */
- function handleChange(){
-  var newText=input.value;
-  if (newText==oldText) return; else oldText=newText;
-  set(orig, newText*costPerSecond);
- }
- 
-/* eventHandler is called on keyboard and mouse events.
-   If there is a pending timeout, it cancels it.
-   It sets a timeout to call handleChange in 50ms. */
- function eventHandler(){
-  if(timeout) clearTimeout(timeout);
-  timeout=setTimeout(handleChange, 50);
- }
- 
- input.onkeydown=input.onkeyup=input.onclick=eventHandler;
-}
-</script>
+		];
+		var camAbi;
+		var tokenContract;
+		var token;
+		var camContract;
+		var cam;
+		var event;
+		var openWin;
+		var watchTime;
+		var blockNum;
+		var videoURL;
+		var costPerSecond;
+		var imageURL1;
+		var imageURL2;
+		var watchButton=document.getElementById('watchButton');
+			
+		window.addEventListener('load', function() {
+			// Checking if Web3 has been injected by the browser (Mist/MetaMask)
+			if (typeof web3 !== 'undefined') {
+				// Use Mist/MetaMask's provider
+				window.web3 = new Web3(web3.currentProvider);
+			} else {
+				console.log('No web3? You should consider trying MetaMask!')
+				// fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
+				window.web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+			}
+				// Now you can start your app & access web3 freely:
+				startApp();
+		});
+			
+		function startApp() {
+			tokenContract = web3.eth.contract(abi);
+			token = tokenContract.at(contractAddress);
+			watchTime = 0;
+			imageURL1 = 'http://117.17.158.187:62000/image/jpeg.cgi';
+			imageURL2 = 'http://117.17.158.187:63000/image/jpeg.cgi';
+			<!--watchButton.disabled = 'disabled';-->
+			setupUpdater();
+			document.getElementsByTagName('input')[0].focus();
+			web3.eth.getAccounts(function(e,r){
+				document.getElementById('accountAddr').innerHTML = getLink(r[0]);
+			});
+		}
+		function getLink(addr) {
+			return '<a target="_blank" href=https://testnet.etherscan.io/address/' + addr + '>' + addr +'</a>';
+		}
+		function sendToken(){
+			var tokenAmount = Number(document.getElementById('tokenAmount').innerText);
+			token.approveAndCall(camAddress,tokenAmount*1000000000,0x000,function(e,r){console.log(r);});
+			console.log(tokenAmount*1000000000);
+			document.getElementById('pending').innerHTML = "pending";
+			event.watch(function(e,r){
+				console.log(r.args.second.c[0]);
+				watchTime = r.args.second.c[0];
+				console.log(typeof watchTime);
+				watchButton.disabled = false;
+				document.getElementById('pending').innerHTML = "Now, video is available";
+				event.stopWatching();
+			});
+		}
+		function watchVideo(){
+			openWin = window.open(videoURL,'_blank');
+			setTimeout(function() {
+			   openWin.close();
+			   watchTime = 0;
+			   watchButton.disabled = 'disabled';
+			   document.getElementById('pending').innerHTML = "Pay token to watch video";
+		   },watchTime*1000);
+		}
+
+		function camSelected(){
+			
+			if(document.getElementById("selectCam").value == 'campus'){
+				cam1Selected();
+			}
+			else if(document.getElementById("selectCam").value == 'lab'){
+				cam2Selected();
+			}
+			else{
+				camNone();
+			}
+			 
+		}
+			
+		function cam1Selected(){
+		  camAddress='0x45d9c9d461188c3b5261518e42f37a37bbf257d0';
+		  camAbi=[
+			{
+				"constant": true,
+				"inputs": [],
+				"name": "getBalance",
+				"outputs": [
+					{
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "payers",
+				"outputs": [
+					{
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"name": "_from",
+						"type": "address"
+					},
+					{
+						"name": "_value",
+						"type": "uint256"
+					},
+					{
+						"name": "_token",
+						"type": "address"
+					},
+					{
+						"name": "_extraData",
+						"type": "bytes"
+					}
+				],
+				"name": "receiveApproval",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"name": "tokenAmount",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"name": "second",
+						"type": "uint256"
+					}
+				],
+				"name": "calculateTime",
+				"type": "event"
+			}
+		];
+		  document.getElementById('videoTime').value = "";
+		  document.getElementById('tokenAmount').innerText = "";
+		  camContract = web3.eth.contract(camAbi);
+		  cam = camContract.at(camAddress);
+		  event = cam.calculateTime();
+		  costPerSecond=0.1;
+		  videoURL = "http://admin@117.17.158.187:62000/video.cgi";
+		  document.getElementById('tokenPerSecond').innerHTML = costPerSecond + "MTT per second";
+		}
+
+		function cam2Selected(){
+		  camAddress='0x3a42586e04880d5d6e3c4dee2cfaed6fe7d2b4fd';
+		  camAbi=[
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"name": "_from",
+						"type": "address"
+					},
+					{
+						"name": "_value",
+						"type": "uint256"
+					},
+					{
+						"name": "_token",
+						"type": "address"
+					},
+					{
+						"name": "_extraData",
+						"type": "bytes"
+					}
+				],
+				"name": "receiveApproval",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"name": "tokenAmount",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"name": "second",
+						"type": "uint256"
+					}
+				],
+				"name": "calculateTime",
+				"type": "event"
+			},
+			{
+				"constant": true,
+				"inputs": [],
+				"name": "getBalance",
+				"outputs": [
+					{
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "payers",
+				"outputs": [
+					{
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			}
+		];
+		  document.getElementById('videoTime').value = "";
+		  document.getElementById('tokenAmount').innerText = "";
+		  camContract = web3.eth.contract(camAbi);
+		  cam = camContract.at(camAddress);
+		  event = cam.calculateTime();
+		  costPerSecond=0.2;
+		  videoURL = "http://admin@117.17.158.187:63000/video.cgi";
+
+		  document.getElementById('tokenPerSecond').innerHTML = costPerSecond;
+		  document.getElementById('selectedContent').style.animationName='mainContentAnimation';
+		  document.getElementById('selectedContent').style.animationDuration='0.5s';
+		  document.getElementById('selectedContent').style.opacity='1';
+		}
+			
+		function camNone(){
+		  camAddress="";
+		  camAbi="";
+		  camContract = "";
+		  cam = "";
+		  event = "";
+		  costPerSecond=1;
+		  document.getElementById('tokenPerSecond').innerHTML = "";
+		}
+		function set(el,text){
+		 while(el.firstChild)el.removeChild(el.firstChild);
+		 el.appendChild(document.createTextNode(text))}
+		 
+		/* setupUpdater will be called once, on page load.
+		 */
+		 
+		function setupUpdater(){
+		 var input=document.getElementsByTagName('input')[0]
+		   , orig=document.getElementById('tokenAmount')
+		   , oldText=input.value
+		   , timeout=null;
+		 
+		/* handleChange is called 50ms after the user stops 
+		   typing. */
+		 function handleChange(){
+		  var newText=input.value;
+		  if (newText==oldText) return; else oldText=newText;
+		  set(orig, newText*costPerSecond);
+		 }
+		 
+		/* eventHandler is called on keyboard and mouse events.
+		   If there is a pending timeout, it cancels it.
+		   It sets a timeout to call handleChange in 50ms. */
+		 function eventHandler(){
+		  if(timeout) clearTimeout(timeout);
+		  timeout=setTimeout(handleChange, 50);
+		 }
+		 
+		 input.onkeydown=input.onkeyup=input.onclick=eventHandler;
+		}
+	</script>
 </html>
