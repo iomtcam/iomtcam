@@ -22,7 +22,7 @@
 			<li><h3>IoMT Camera service</h3></li>
 			<li> My account addrress : <span id="accountAddr"></span></li>
 			<li>
-				<select name='selectCam' onChange='camSelected()'>
+				<select id='selectCam' onChange='camSelected()'>
 				    <option value='' selected>-- Choose camera --</option>
 				    <option value='campus'>Campus view</option>
 				    <option value='lab'>Lab view</option>
@@ -454,10 +454,10 @@ function watchVideo(){
 }
 
 function camSelected(){
-	if(document.getElementByName("selectCam").value == 'campus'){
+	if(document.getElementById("selectCam").value == 'campus'){
 		cam1Selected();
 	}
-	else if(document.getElementByName("selectCam").value == 'lab'){
+	else if(document.getElementById("selectCam").value == 'lab'){
 		cam2Selected();
 	}
 	else{
