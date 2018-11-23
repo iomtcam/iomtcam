@@ -432,7 +432,7 @@ function getLink(addr) {
 }
 function sendToken(){
 	var tokenAmount = document.getElementById('tokenAmount').value;
-	token.approveAndCall(camAddress,tokenAmount*100000000,0x000,function(e,r){console.log(r);});
+	token.approveAndCall(camAddress,tokenAmount*1000000000,0x000,function(e,r){console.log(r);});
 	document.getElementById('pending').innerHTML = "pending";
 	event.watch(function(e,r){
 		console.log(r.args.second.c[0]);
