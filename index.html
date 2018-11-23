@@ -454,10 +454,10 @@ function watchVideo(){
 }
 
 function camSelected(){
-	if(document.getElementById("selectCam").value == 'campus'){
+	if(document.getElementByName("selectCam").value == 'campus'){
 		cam1Selected();
 	}
-	else if(document.getElementById("selectCam").value == 'lab'){
+	else if(document.getElementByName("selectCam").value == 'lab'){
 		cam2Selected();
 	}
 	else{
