@@ -431,7 +431,7 @@ function getLink(addr) {
   return '<a target="_blank" href=https://testnet.etherscan.io/address/' + addr + '>' + addr +'</a>';
 }
 function sendToken(){
-	var tokenAmount = document.getElementById('tokenAmount').firstChild;
+	var tokenAmount = Number(document.getElementById('tokenAmount').innerText);
 	token.approveAndCall(camAddress,tokenAmount*1000000000,0x000,function(e,r){console.log(r);});
 	console.log(tokenAmount*1000000000);
 	document.getElementById('pending').innerHTML = "pending";
