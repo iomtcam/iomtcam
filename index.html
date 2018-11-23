@@ -218,12 +218,14 @@
 				border: 0px 0px 1px 0px;
 				height: 34px;
 				color: #fff;
+				width: 10%;
 				border-color: rgba(0,0,0,0);
 				border-bottom-color: #fff;
 				-webkit-box-shadow: none;
 				box-shadow: none;
 				outline: 0;
 				background: rgba(0,0,0,0);
+				text-align: center;
 			}
 			#videoTime:focus{
 				box-shadow: none;
@@ -232,18 +234,19 @@
 			}
 			
 			button{
-				margin-top: 3px;
+			    margin-top: 10px;
 				font-family: 'Open Sans Condensed', sans-serif;
 				font-size: 30px;
-				border: 3px
-				border-radius: 15px;
+				padding: 2px;
+				border: 1px solid white;
+				border-radius: 5px;
 				height: 34px;
 				color: #fff;
-				border-color: #fff;
 				-webkit-box-shadow: none;
 				box-shadow: none;
 				outline: 0;
 				background: rgba(0,0,0,0);
+				vertical-align: center;
 			}
 
 		</style>
@@ -270,7 +273,7 @@
 					<span><img style="-webkit-user-select: none;" id='imgg' src='http://117.17.158.187:62000/image/jpeg.cgi' width="40%"></span><br>
 					<span id='tokenPerSecond'></span><span>MTT per second</span><br>
 					<span>I want to watch for</span><input id='videoTime' type="text"><span>seconds</span><br>
-					<span>And it costs </span><span id='tokenAmount'> </span><span> MTT</span><button onclick="sendToken()">Send Token</button><br>
+					<span>And it costs </span><span id='tokenAmount'> </span><span> MTT </span><button onclick="sendToken()">Send Token</button><br>
 				</div>
 				<!--<table id='table'>
 					<tr>
@@ -815,7 +818,7 @@
 		  event = cam.calculateTime();
 		  costPerSecond=0.1;
 		  videoURL = "http://admin@117.17.158.187:62000/video.cgi";
-		  document.getElementById('tokenPerSecond').innerHTML = costPerSecond + "MTT per second";
+		  document.getElementById('tokenPerSecond').innerHTML = costPerSecond;
 		}
 
 		function cam2Selected(){
