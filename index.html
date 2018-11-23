@@ -22,14 +22,17 @@
 			<li><h3>IoMT Camera service</h3></li>
 			<li> My account addrress : <span id="accountAddr"></span></li>
 			<li>
-				<select name='fruits'>
+				<select name='selectCam' onChange='camSelected()'>
 				    <option value='' selected>-- Choose camera --</option>
-				    <option value='view'>Campus view</option>
+				    <option value='campus'>Campus view</option>
 				    <option value='lab'>Lab view</option>
 				</select>
 			</li>
-			<li><input id="tokenAmount" type="decimal"><button onclick="sendToken()">입금</button></li>
-			<li><button onclick="watchVideo()">시청하기</button></li>
+			<li><span id='tokenPerSecond'></span>
+			<li><input id="videoTime" type="decimal"><button onclick="sendToken()">Send Token</button></li>
+			<li><span id='tokenAmount'></span></li>
+			<li><span id='pending'>Pay token to watch video</span></li>
+			<li><button id='watchButton' onclick="watchVideo()" disable="">Watch video</button></li>
 		<ul>
 	</div>	
   	
@@ -38,7 +41,7 @@
 <!-- script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script -->
 <script>
 var contractAddress = '0x68a164c76eec4d7b8064d5a1df7e9e931ef95a78';
-var cam1Address = '0x45d9c9d461188c3b5261518e42f37a37bbf257d0';
+var camAddress;
 var abi = [
 	{
 		"constant": true,
@@ -385,7 +388,87 @@ var abi = [
 		"type": "event"
 	}
 ];
-var cam1abi = [
+var camAbi;
+var tokenContract;
+var token;
+var camContract;
+var cam;
+var event;
+var openWin;
+var watchTime;
+var blockNum;
+var videoURL;
+var costPerSecond;
+var watchButton=document.getElementById('watchButton');
+	
+window.addEventListener('load', function() {
+  // Checking if Web3 has been injected by the browser (Mist/MetaMask)
+  if (typeof web3 !== 'undefined') {
+    // Use Mist/MetaMask's provider
+    window.web3 = new Web3(web3.currentProvider);
+  } else {
+    console.log('No web3? You should consider trying MetaMask!')
+    // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
+    window.web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+  }
+  // Now you can start your app & access web3 freely:
+  startApp();
+});
+	
+function startApp() {
+  tokenContract = web3.eth.contract(abi);
+  token = tokenContract.at(contractAddress);
+  watchTime = 0;
+  web3.eth.getAccounts(function(e,r){
+    document.getElementById('accountAddr').innerHTML = getLink(r[0]);
+  watchButton.disabled = "true";
+  setupUpdater();
+  document.getElementsByTagName('input')[0].focus();
+  });
+  
+}
+function getLink(addr) {
+  return '<a target="_blank" href=https://testnet.etherscan.io/address/' + addr + '>' + addr +'</a>';
+}
+function sendToken(){
+	var tokenAmount = document.getElementById('tokenAmount').value;
+	token.approveAndCall('0x45d9c9d461188c3b5261518e42f37a37bbf257d0',tokenAmount*100000000,0x000,function(e,r){console.log(r);});
+	document.getElementById('pending').innerHTML = "pending";
+	event.watch(function(e,r){
+		console.log(r.args.second.c[0]);
+		watchTime = r.args.second.c[0];
+		console.log(typeof watchTime);
+		watchButton.disabled = "false";
+		document.getElementById('pending').innerHTML = "Now, video is available";
+		event.stopWatching();
+	});
+}
+function watchVideo(){
+    openWin = window.open(videoURL,'_blank');
+    setTimeout(function() {
+       openWin.close();
+       watchTime = 0;
+       watchButton.disabled = "true";
+       document.getElementById('pending').innerHTML = "Pay token to watch video";
+   },watchTime*1000);
+}
+
+function camSelected(){
+	if(document.getElementById("selectCam").value == 'campus'){
+		cam1Selected();
+	}
+	else if(document.getElementById("selectCam").value == 'lab'){
+		cam2Selected();
+	}
+	else{
+		camNone();
+	}
+     
+}
+	
+function cam1Selected(){
+  camAddress='x68a164c76eec4d7b8064d5a1df7e9e931ef95a78';
+  camAbi=[
 	{
 		"constant": true,
 		"inputs": [],
@@ -462,61 +545,142 @@ var cam1abi = [
 		"name": "calculateTime",
 		"type": "event"
 	}
-]
-var tokenContract;
-var token;
-var cam1Contract;
-var cam1;
-var event;
-var openWin;
-var watchTime;
-var blockNum;
+];
+  camContract = web3.eth.contract(camAbi);
+  cam = camContract.at(camAddress);
+  event = cam.calculateTime();
+  costPerSecond=0.1;
+  videoURL = "http://admin@117.17.158.187:62000/video.cgi";
+  document.getElementById('tokenPerSecond').innerHTML = costPerSecond + "MTT per second";
+}
+
+function cam2Selected(){
+  camAddress='0x3a42586e04880d5d6e3c4dee2cfaed6fe7d2b4fd';
+  camAbi=[
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_from",
+				"type": "address"
+			},
+			{
+				"name": "_value",
+				"type": "uint256"
+			},
+			{
+				"name": "_token",
+				"type": "address"
+			},
+			{
+				"name": "_extraData",
+				"type": "bytes"
+			}
+		],
+		"name": "receiveApproval",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "tokenAmount",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "second",
+				"type": "uint256"
+			}
+		],
+		"name": "calculateTime",
+		"type": "event"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getBalance",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "payers",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	}
+];
+  camContract = web3.eth.contract(camAbi);
+  cam = camContract.at(camAddress);
+  event = cam.calculateTime();
+  costPerSecond=0.2;
+  videoURL = "http://admin@117.17.158.187:63000/video.cgi";
+  document.getElementById('tokenPerSecond').innerHTML = costPerSecond + "MTT per second";
+}
 	
-window.addEventListener('load', function() {
-  // Checking if Web3 has been injected by the browser (Mist/MetaMask)
-  if (typeof web3 !== 'undefined') {
-    // Use Mist/MetaMask's provider
-    window.web3 = new Web3(web3.currentProvider);
-  } else {
-    console.log('No web3? You should consider trying MetaMask!')
-    // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
-    window.web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-  }
-  // Now you can start your app & access web3 freely:
-  startApp();
-});
-	
-function startApp() {
-  tokenContract = web3.eth.contract(abi);
-  token = tokenContract.at(contractAddress);
-  cam1Contract = web3.eth.contract(cam1abi);
-  cam1 = cam1Contract.at(cam1Address);
-  event = cam1.calculateTime();
-  watchTime = 0;
-  web3.eth.getAccounts(function(e,r){
-    document.getElementById('accountAddr').innerHTML = getLink(r[0]);
-  });
-  
+function camNone(){
+  camAddress="";
+  camAbi="";
+  camContract = "";
+  cam = "";
+  event = "";
+  costPerSecond="";
+  document.getElementById('tokenPerSecond').innerHTML = "";
 }
-function getLink(addr) {
-  return '<a target="_blank" href=https://testnet.etherscan.io/address/' + addr + '>' + addr +'</a>';
-}
-function sendToken(){
-	var tokenAmount = document.getElementById('tokenAmount').value;
-	token.approveAndCall('0x45d9c9d461188c3b5261518e42f37a37bbf257d0',tokenAmount*100000000,0x000,function(e,r){console.log(r);});
-	event.watch(function(e,r){
-		console.log(r.args.second.c[0]);
-		watchTime = r.args.second.c[0];
-		console.log(typeof watchTime);
-		event.stopWatching();
-	});
-}
-function watchVideo(){
-    openWin = window.open('http://admin@117.17.158.187:62000/video.cgi','_blank');
-    setTimeout(function() {
-       openWin.close();
-       watchTime = 0;
-   },watchTime*1000);
+function set(el,text){
+ while(el.firstChild)el.removeChild(el.firstChild);
+ el.appendChild(document.createTextNode(text))}
+ 
+/* setupUpdater will be called once, on page load.
+ */
+ 
+function setupUpdater(){
+ var input=document.getElementsByTagName('input')[0]
+   , orig=document.getElementById('tokenAmount')
+   , oldText=input.value
+   , timeout=null;
+ 
+/* handleChange is called 50ms after the user stops 
+   typing. */
+ function handleChange(){
+  var newText=input.value;
+  if (newText==oldText) return; else oldText=newText;
+  set(orig, newText*costPerSecond);
+ }
+ 
+/* eventHandler is called on keyboard and mouse events.
+   If there is a pending timeout, it cancels it.
+   It sets a timeout to call handleChange in 50ms. */
+ function eventHandler(){
+  if(timeout) clearTimeout(timeout);
+  timeout=setTimeout(handleChange, 50);
+ }
+ 
+ input.onkeydown=input.onkeyup=input.onclick=eventHandler;
 }
 </script>
 </html>
