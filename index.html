@@ -661,7 +661,7 @@ function set(el,text){
  
 function setupUpdater(){
  var input=document.getElementsByTagName('input')[0]
-   , orig=document.getElementById('tokenAmount')
+   , orig=document.getElementById('tokenAmount').innerHTML
    , oldText=input.value
    , timeout=null;
  
