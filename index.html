@@ -669,7 +669,7 @@ function setupUpdater(){
  function handleChange(){
   var newText=input.value;
   if (newText==oldText) return; else oldText=newText;
-  set(orig, newText*costPerSecond);
+  set(orig, newText);
  }
  
 /* eventHandler is called on keyboard and mouse events.
