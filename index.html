@@ -455,9 +455,8 @@ function watchVideo(){
 }
 
 function camSelected(){
-	costPerSecond = 0;
-	document.getElementById('tokenPerSecond').innerHTML = costPerSecond + "MTT per second";
-	document.getElementById('videoTime').innerHTML = "";
+	document.getElementById('videoTime').value = "";
+	document.getElementById('tokenAmount').innerText = "";
 	if(document.getElementById("selectCam").value == 'campus'){
 		cam1Selected();
 	}
