@@ -648,7 +648,7 @@ function camNone(){
   camContract = "";
   cam = "";
   event = "";
-  costPerSecond="";
+  costPerSecond=1;
   document.getElementById('tokenPerSecond').innerHTML = "";
 }
 function set(el,text){
@@ -669,7 +669,7 @@ function setupUpdater(){
  function handleChange(){
   var newText=input.value;
   if (newText==oldText) return; else oldText=newText;
-  set(orig, newText);
+  set(orig, newText*costPerSecond);
  }
  
 /* eventHandler is called on keyboard and mouse events.
