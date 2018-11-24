@@ -503,16 +503,17 @@
             top: 0;
             width: 100%;
         }
-        #wat {
-		margin: auto auto;
-	}
+        .cen {
+			margin-left: auto;
+			margin-right: auto;
+		}
 
 		</style>
 	</head>
 	<body>
 		<div id='container'>
 			<div id='header'>
-				<span id='title'>IoMT Camera service</span>
+				<span id='title'>IoMT Camera service4</span>
 			</div>
 			<div id='content'>
 				<div class="menubar">
@@ -569,8 +570,8 @@
 							<div class="pop-conts3">
 								<!--content //-->
 									<div class="loading-container3">
-										 <div><img id="screen" style="-webkit-user-select: none;" src='https://raw.githubusercontent.com/iomtcam/iomtcam.github.io/master/black.jpg'/></div>
-										 <div><button id="wat" style="align-items: center;" onclick="watchVideo()">Watch video</button></div>
+										 <div class="cen"><img id="screen" style="-webkit-user-select: none;" src='https://raw.githubusercontent.com/iomtcam/iomtcam.github.io/master/black.jpg'/></div>
+										 <div class="cen"><button id="wat" onclick="watchVideo()">Watch video</button></div>
 									</div>
 								<!--// content-->
 							</div>
@@ -998,7 +999,7 @@
 			document.getElementById("screen").src=videoURL;
 			setTimeout(function() {
 				var $href = '#layer4';
-				fade_popup($href);
+				fade_popup3($href);
 				document.getElementById("screen").src="https://raw.githubusercontent.com/iomtcam/iomtcam.github.io/master/black.jpg";
 		   },watchTime*1000);
 		}
