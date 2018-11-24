@@ -503,6 +503,9 @@
             top: 0;
             width: 100%;
         }
+        #wat {
+		margin: auto auto;
+	}
 
 		</style>
 	</head>
@@ -567,7 +570,7 @@
 								<!--content //-->
 									<div class="loading-container3">
 										 <div><img id="screen" style="-webkit-user-select: none;" src='https://raw.githubusercontent.com/iomtcam/iomtcam.github.io/master/black.jpg'/></div>
-										 <div><button onclick="watchVideo()">Watch video</button></div>
+										 <div><button id="wat" onclick="watchVideo()">Watch video</button></div>
 									</div>
 								<!--// content-->
 							</div>
@@ -1102,7 +1105,7 @@
 		  cam = camContract.at(camAddress);
 		  event = cam.calculateTime();
 		  costPerSecond=0.1;
-		  videoURL = "http://admin@117.17.158.187:62000/video.cgi";
+		  videoURL = "http://117.17.158.187:62000/video.cgi";
 		  document.getElementById('tokenPerSecond').innerHTML = costPerSecond;
 		  document.getElementById('current').innerHTML = "Campus view";
 		  document.getElementById('selectedContent').style.opacity='0';
@@ -1200,7 +1203,7 @@
 		  cam = camContract.at(camAddress);
 		  event = cam.calculateTime();
 		  costPerSecond=0.2;
-		  videoURL = "http://admin@117.17.158.187:63000/video.cgi";
+		  videoURL = "http://117.17.158.187:63000/video.cgi";
 
 		  document.getElementById('tokenPerSecond').innerHTML = costPerSecond;
 		  document.getElementById('current').innerHTML = "Lab view";
