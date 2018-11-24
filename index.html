@@ -965,9 +965,6 @@
 			<!--watchButton.disabled = 'disabled';-->
 			setupUpdater();
 			document.getElementsByTagName('input')[0].focus();
-			web3.eth.getAccounts(function(e,r){
-				document.getElementById('accountAddr').innerHTML = getLink(r[0]);
-			});
 		}
 		function getLink(addr) {
 			return '<a target="_blank" href=https://testnet.etherscan.io/address/' + addr + '>' + addr +'</a>';
