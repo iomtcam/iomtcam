@@ -233,7 +233,7 @@
 			  }
 			}
 			
-			.pop-layer .pop-container, .pop-layer2 .pop-container2 {
+			.pop-layer .pop-container, .pop-layer2 .pop-container2, .pop-layer3 .pop-container3 {
 			  padding: 20px 25px;
 			}
 
@@ -242,7 +242,7 @@
 			  line-height: 25px;
 			}
 
-			.pop-layer .btn-r, .pop-layer2 .btn-r2{
+			.pop-layer .btn-r, .pop-layer2 .btn-r2, .pop-layer3 .btn-r3{
 			  width: 100%;
 			  margin: 10px 0 20px;
 			  padding-top: 10px;
@@ -250,7 +250,7 @@
 			  text-align: right;
 			}
 
-			.pop-layer, .pop-layer2 {
+			.pop-layer, .pop-layer2, .pop-layer3 {
 			  display: none;
 			  position: absolute;
 			  top: 50%;
@@ -263,7 +263,7 @@
 			}
 
 			
-			.dim-layer, .dim-layer2 {
+			.dim-layer, .dim-layer2, .dim-layer3 {
 			  display: none;
 			  position: fixed;
 			  _position: absolute;
@@ -274,7 +274,7 @@
 			  z-index: 100;
 			}
 
-			.dim-layer .dimBg, .dim-layer2 .dimBg2 {
+			.dim-layer .dimBg, .dim-layer2 .dimBg2, .dim-layer3 .dimBg3 {
 			  position: absolute;
 			  top: 0;
 			  left: 0;
@@ -285,11 +285,11 @@
 			  filter: alpha(opacity=50);
 			}
 
-			.dim-layer .pop-layer, .dim-layer2 .pop-layer2 {
+			.dim-layer .pop-layer, .dim-layer2 .pop-layer2, .dim-layer3 .pop-layer3 {
 			  display: block;
 			}
 
-			a.btn-layerClose, a.btn-layerClose2 {
+			a.btn-layerClose, a.btn-layerClose2, a.btn-layerClose3 {
 			  margin-left:20px;
 			  display: inline-block;
 			  height: 30px;
@@ -302,7 +302,7 @@
 			  text-decoration: none;
 			}
 
-			a.btn-layerClose:hover, a.btn-layerClose2:hover,{
+			a.btn-layerClose:hover, a.btn-layerClose2:hover,, a.btn-layerClose3:hover,{
 			  border: 1px solid #5b5b5b;
 			  background-color: #5b5b5b;
 			  color: #fff;
@@ -498,7 +498,6 @@
 		<div id='container'>
 			<div id='header'>
 				<span id='title'>IoMT Camera service</span>
-				<!--<img style="-webkit-user-select: none;" src="http://117.17.158.187:62000/video.cgi">-->
 			</div>
 			<div id='content'>
 				<div class="menubar">
@@ -542,6 +541,21 @@
 								<!--content //-->
 									<div class="loading-container2">
 										<div id="loading-text2">Please input time as much as you want  <a href="#" class="btn-layerClose2">Close</a></div>
+									</div>
+								<!--// content-->
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="dim-layer3">
+					<div class="dimBg3"></div>
+					<div id="layer4" class="pop-layer3">
+						<div class="pop-container3">
+							<div class="pop-conts3">
+								<!--content //-->
+									<div class="loading-container3">
+										 <div><img id="screen" style="-webkit-user-select: none;" src='https://raw.githubusercontent.com/iomtcam/iomtcam.github.io/master/black.jpg'/></div>
+										 <div><button>Watch video</button></div>
 									</div>
 								<!--// content-->
 							</div>
@@ -960,16 +974,17 @@
 				console.log(typeof watchTime);
 				var $href = '#layer2';
 				fade_popup($href);
+				$href = '#layer4';
+				layer_popup($href);
 				event.stopWatching();
 			});
 		}
 		function watchVideo(){
-			openWin = window.open(videoURL,'_blank');
+			document.getElementById("imageid").src=videoURL;
 			setTimeout(function() {
-			   openWin.close();
-			   watchTime = 0;
-			   watchButton.disabled = 'disabled';
-			   document.getElementById('pending').innerHTML = "Pay token to watch video";
+				var $href = '#layer4';
+				fade_popup($href);
+				document.getElementById("imageid").src="https://raw.githubusercontent.com/iomtcam/iomtcam.github.io/master/black.jpg";
 		   },watchTime*1000);
 		}
 
@@ -1303,6 +1318,39 @@
         });
 
     }
+	function layer_popup3(el){
+
+        var $el = $(el);		//레이어의 id를 $el 변수에 저장
+        var isDim = $el.prev().hasClass('dimBg3');	//dimmed 레이어를 감지하기 위한 boolean 변수
+
+        isDim ? $('.dim-layer3').fadeIn() : $el.fadeIn();
+
+        var $elWidth = ~~($el.outerWidth()),
+            $elHeight = ~~($el.outerHeight()),
+            docWidth = $(document).width(),
+            docHeight = $(document).height();
+
+        // 화면의 중앙에 레이어를 띄운다.
+        if ($elHeight < docHeight || $elWidth < docWidth) {
+            $el.css({
+                marginTop: -$elHeight /2,
+                marginLeft: -$elWidth/2
+            })
+        } else {
+            $el.css({top: 0, left: 0});
+        }
+
+        $el.find('a.btn-layerClose3').click(function(){
+            isDim ? $('.dim-layer3').fadeOut() : $el.fadeOut(); // 닫기 버튼을 클릭하면 레이어가 닫힌다.
+            return false;
+        });
+
+        $('.layer .dimBg3').click(function(){
+            $('.dim-layer3').fadeOut();
+            return false;
+        });
+
+    }
 	
 	function fade_popup(el){
         var $el = $(el);		//레이어의 id를 $el 변수에 저장
@@ -1311,6 +1359,14 @@
         isDim ? $('.dim-layer').fadeOut() : $el.fadeOut(); // 닫기 버튼을 클릭하면 레이어가 닫힌다.
 
         $('.dim-layer').fadeOut();
+    }
+	function fade_popup3(el){
+        var $el = $(el);		//레이어의 id를 $el 변수에 저장
+        var isDim = $el.prev().hasClass('dimBg3');	//dimmed 레이어를 감지하기 위한 boolean 변수
+
+        isDim ? $('.dim-layer3').fadeOut() : $el.fadeOut(); // 닫기 버튼을 클릭하면 레이어가 닫힌다.
+
+        $('.dim-layer3').fadeOut();
     }
 	
       //# sourceURL=pen.js
