@@ -29,8 +29,8 @@
 			#header {
 				text-align:center;
 				padding: 20px;
-				margin-bottom: 20px;
-				margin-top:80px;
+				margin-bottom: 15px;
+				margin-top:20px;
 				border: none;
 			}
 			#content {
@@ -101,7 +101,7 @@
 				text-decoration:none;
 			}
 
-			.menubar li a:hover, .menubar ul li:hover a{
+			.menubar ul>li:hover a{
 				animation-name: hoverSelect;
 				animation-duration: 0.5s;
 				background: #5b5b5b;
@@ -133,7 +133,7 @@
 				/*left:0;*/
 			}
 
-			.menubar li:hover ul{
+			.menubar ul>li:hover ul{
 				animation-name: menuAnimation;
 				animation-duration: 0.5s;
 				opacity:1;
@@ -157,10 +157,6 @@
 				width:100%;
 			}
 
-			.menubar li:hover li a{
-				background:none;
-			}
-
 			.menubar li ul a{
 				display:block;
 				height:52px;
@@ -180,6 +176,7 @@
 				color:#5b5b5b;
 				text-decoration:none;
 			}
+			
 			@keyframes selectAnimation {
 			  from {
 				background: #5b5b5b;
@@ -196,6 +193,7 @@
 			}
 			
 			#selectedContent{
+				margin-top: 20px;
 				text-align:center;
 				font-size: 30px;
 				color: #fff;
@@ -236,18 +234,278 @@
 			button{
 			    margin-top: 10px;
 				font-family: 'Open Sans Condensed', sans-serif;
-				font-size: 30px;
+				font-weight: bold;
+				font-size: 28px;
 				padding: 2px;
 				border: 1px solid white;
 				border-radius: 5px;
-				height: 34px;
-				color: #fff;
+				height: 40px;
+				color: rgba(0,0,0,0.5);
 				-webkit-box-shadow: none;
 				box-shadow: none;
 				outline: 0;
-				background: rgba(0,0,0,0);
+				background: #fff;
 				vertical-align: center;
 			}
+			button:hover{
+				cursor: pointer;
+				animation-name: buttonHover;
+				animation-duration: 1s;
+				animation-iteration-count: infinite;
+				
+			}
+			@keyframes buttonHover{
+			  0% {
+				color: rgba(0,0,0,0.5);
+				background: #fff;
+			  }
+			  50% {
+				color: #fff;
+				background: rgba(0,0,0,0.5);
+			  }
+			  100% {
+				color: rgba(0,0,0,0.5);
+				background: #fff;
+			  }
+			}
+			
+			.pop-layer .pop-container {
+			  padding: 20px 25px;
+			}
+
+			.pop-layer p.ctxt {
+			  color: #666;
+			  line-height: 25px;
+			}
+
+			.pop-layer .btn-r {
+			  width: 100%;
+			  margin: 10px 0 20px;
+			  padding-top: 10px;
+			  border-top: 1px solid #DDD;
+			  text-align: right;
+			}
+
+			.pop-layer {
+			  display: none;
+			  position: absolute;
+			  top: 50%;
+			  left: 50%;
+			  width: 600px;
+			  height: auto;
+			  background-color: #333333;
+			  border: 5px solid #fff;
+			  z-index: 10;
+			}
+
+			
+			.dim-layer {
+			  display: none;
+			  position: fixed;
+			  _position: absolute;
+			  top: 0;
+			  left: 0;
+			  width: 100%;
+			  height: 100%;
+			  z-index: 100;
+			}
+
+			.dim-layer .dimBg {
+			  position: absolute;
+			  top: 0;
+			  left: 0;
+			  width: 100%;
+			  height: 100%;
+			  background: #000;
+			  opacity: .5;
+			  filter: alpha(opacity=50);
+			}
+
+			.dim-layer .pop-layer {
+			  display: block;
+			}
+
+			a.btn-layerClose {
+			  display: inline-block;
+			  height: 25px;
+			  padding: 0 14px 0;
+			  border: 1px solid #304a8a;
+			  background-color: #3f5a9d;
+			  font-size: 13px;
+			  color: #fff;
+			  line-height: 25px;
+			}
+
+			a.btn-layerClose:hover {
+			  border: 1px solid #091940;
+			  background-color: #1f326a;
+			  color: #fff;
+			}
+			a.btn-example:link{
+				border: 2px solid #fff;
+				border-radius: 15px;
+				color:#fff;
+				text-decoration: none;
+				padding: 2px;
+				margin 4px;
+			}
+			a.btn-example:visited{
+				border: 2px solid #fff;
+				border-radius: 15px;
+				color:#fff;
+				text-decoration: none;
+				padding: 2px;
+				margin 4px;
+			}
+			a.btn-example:hover{
+				animation-name: ahover;
+				animation-duration: 3s;
+				animation-iteration-count: infinite;
+				border: 2px solid #fff;
+				border-radius: 15px;
+				color:#fff;
+				text-decoration: none;
+				padding: 2px;
+				margin 4px;
+			}
+			@keyframes ahover{
+				0%{
+				  background-color: none;
+				  color: #fff;
+				  border-color: #fff;
+				}
+				50%{
+				   background-color: #fff;
+				  color: #000;
+				  border-color: #000;
+				}
+				100%{
+				   background-color: none;
+				  color: #fff;
+				  border-color: #fff;
+				}
+			}
+
+        @keyframes rotate-loading {
+            0%  {transform: rotate(0deg);-ms-transform: rotate(0deg); -webkit-transform: rotate(0deg); -o-transform: rotate(0deg); -moz-transform: rotate(0deg);}
+            100% {transform: rotate(360deg);-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); -o-transform: rotate(360deg); -moz-transform: rotate(360deg);}
+        }
+
+        @-moz-keyframes rotate-loading {
+            0%  {transform: rotate(0deg);-ms-transform: rotate(0deg); -webkit-transform: rotate(0deg); -o-transform: rotate(0deg); -moz-transform: rotate(0deg);}
+            100% {transform: rotate(360deg);-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); -o-transform: rotate(360deg); -moz-transform: rotate(360deg);}
+        }
+
+        @-webkit-keyframes rotate-loading {
+            0%  {transform: rotate(0deg);-ms-transform: rotate(0deg); -webkit-transform: rotate(0deg); -o-transform: rotate(0deg); -moz-transform: rotate(0deg);}
+            100% {transform: rotate(360deg);-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); -o-transform: rotate(360deg); -moz-transform: rotate(360deg);}
+        }
+
+        @-o-keyframes rotate-loading {
+            0%  {transform: rotate(0deg);-ms-transform: rotate(0deg); -webkit-transform: rotate(0deg); -o-transform: rotate(0deg); -moz-transform: rotate(0deg);}
+            100% {transform: rotate(360deg);-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); -o-transform: rotate(360deg); -moz-transform: rotate(360deg);}
+        }
+
+        @keyframes rotate-loading {
+            0%  {transform: rotate(0deg);-ms-transform: rotate(0deg); -webkit-transform: rotate(0deg); -o-transform: rotate(0deg); -moz-transform: rotate(0deg);}
+            100% {transform: rotate(360deg);-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); -o-transform: rotate(360deg); -moz-transform: rotate(360deg);}
+        }
+
+        @-moz-keyframes rotate-loading {
+            0%  {transform: rotate(0deg);-ms-transform: rotate(0deg); -webkit-transform: rotate(0deg); -o-transform: rotate(0deg); -moz-transform: rotate(0deg);}
+            100% {transform: rotate(360deg);-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); -o-transform: rotate(360deg); -moz-transform: rotate(360deg);}
+        }
+
+        @-webkit-keyframes rotate-loading {
+            0%  {transform: rotate(0deg);-ms-transform: rotate(0deg); -webkit-transform: rotate(0deg); -o-transform: rotate(0deg); -moz-transform: rotate(0deg);}
+            100% {transform: rotate(360deg);-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); -o-transform: rotate(360deg); -moz-transform: rotate(360deg);}
+        }
+
+        @-o-keyframes rotate-loading {
+            0%  {transform: rotate(0deg);-ms-transform: rotate(0deg); -webkit-transform: rotate(0deg); -o-transform: rotate(0deg); -moz-transform: rotate(0deg);}
+            100% {transform: rotate(360deg);-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); -o-transform: rotate(360deg); -moz-transform: rotate(360deg);}
+        }
+
+        @keyframes loading-text-opacity {
+            0%  {opacity: 0}
+            20% {opacity: 0}
+            50% {opacity: 1}
+            100%{opacity: 0}
+        }
+
+        @-moz-keyframes loading-text-opacity {
+            0%  {opacity: 0}
+            20% {opacity: 0}
+            50% {opacity: 1}
+            100%{opacity: 0}
+        }
+
+        @-webkit-keyframes loading-text-opacity {
+            0%  {opacity: 0}
+            20% {opacity: 0}
+            50% {opacity: 1}
+            100%{opacity: 0}
+        }
+
+        @-o-keyframes loading-text-opacity {
+            0%  {opacity: 0}
+            20% {opacity: 0}
+            50% {opacity: 1}
+            100%{opacity: 0}
+        }
+        .loading-container,
+        .loading {
+            height: 200px;
+            position: relative;
+            width: 200px;
+            border-radius: 100%;
+        }
+
+
+        .loading-container { margin: 40px auto }
+
+        .loading {
+            border: 4px solid transparent;
+            border-color: transparent #fff transparent #FFF;
+            -moz-animation: rotate-loading 1.5s linear 0s infinite normal;
+            -moz-transform-origin: 50% 50%;
+            -o-animation: rotate-loading 1.5s linear 0s infinite normal;
+            -o-transform-origin: 50% 50%;
+            -webkit-animation: rotate-loading 1.5s linear 0s infinite normal;
+            -webkit-transform-origin: 50% 50%;
+            animation: rotate-loading 1.5s linear 0s infinite normal;
+            transform-origin: 50% 50%;
+        }
+
+        .loading-container:hover .loading {
+            border-color: transparent #E45635 transparent #E45635;
+        }
+        .loading-container:hover .loading,
+        .loading-container .loading {
+            -webkit-transition: all 0.5s ease-in-out;
+            -moz-transition: all 0.5s ease-in-out;
+            -ms-transition: all 0.5s ease-in-out;
+            -o-transition: all 0.5s ease-in-out;
+            transition: all 0.5s ease-in-out;
+        }
+
+        #loading-text {
+            -moz-animation: loading-text-opacity 2s linear 0s infinite normal;
+            -o-animation: loading-text-opacity 2s linear 0s infinite normal;
+            -webkit-animation: loading-text-opacity 2s linear 0s infinite normal;
+            animation: loading-text-opacity 2s linear 0s infinite normal;
+            color: #ffffff;
+            font-family: "Helvetica Neue, "Helvetica", ""arial";
+            font-size: 30px;
+            font-weight: bold;
+            margin-top: 62px;
+            opacity: 0;
+            position: absolute;
+            text-align: center;
+            text-transform: uppercase;
+            top: 0;
+            width: 200px;
+        }
 
 		</style>
 	</head>
@@ -262,19 +520,37 @@
 				   <ul>
 					  <li><a href="#" id="current">Select a camera</a>
 						 <ul>
-						   <li><a href="#" onclick="cam1Selected();">Campus view</a></li>
-						   <li><a href="#" onclick="cam2Selected();">Lab view</a></li>
+						   <li><a id="cam1" href="#" onclick="cam1Selected();">Campus view</a></li>
+						   <li><a id="cam2" href="#" onclick="cam2Selected();">Lab view</a></li>
 						 </ul>
 					  </li>
 				   </ul>
 				</div>
 				<div id='selectedContent'>
 					<span>Thumbnail</span><br>
-					<span><img style="-webkit-user-select: none;" id='imgg' src='http://117.17.158.187:62000/image/jpeg.cgi' width="40%"></span><br>
+					<span><img style="-webkit-user-select: none;" id='imgg1' src='http://117.17.158.187:62000/image/jpeg.cgi' width="30%"></span><br>
 					<span id='tokenPerSecond'></span><span>MTT per second</span><br>
 					<span>I want to watch for</span><input id='videoTime' type="text"><span>seconds</span><br>
-					<span>And it costs </span><span id='tokenAmount'> </span><span> MTT </span><button onclick="sendToken()">Send Token</button><br>
+					<span>And it costs </span><span id='tokenAmount'> </span><span> MTT</span><br>
+					<a class="btn-example" href="#layer2">Send Token</a><br>
 				</div>
+				<div class="dim-layer">
+					<div class="dimBg"></div>
+					<div id="layer2" class="pop-layer">
+						<div class="pop-container">
+							<div class="pop-conts">
+								<!--content //-->
+									<div class="loading-container">
+										<div class="loading"></div>
+										<div id="loading-text">Sending<br>MTT Token</div>
+									</div>
+
+								<!--// content-->
+							</div>
+						</div>
+					</div>
+				</div>
+
 				<!--<table id='table'>
 					<tr>
 						<td>
@@ -298,6 +574,8 @@
 		</div>	
 	</body>
 	<script src="https://cdn.rawgit.com/ethereum/web3.js/develop/dist/web3.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
 	<!-- script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script -->
 	<script>
 		var contractAddress = '0x68a164c76eec4d7b8064d5a1df7e9e931ef95a78';
@@ -819,6 +1097,12 @@
 		  costPerSecond=0.1;
 		  videoURL = "http://admin@117.17.158.187:62000/video.cgi";
 		  document.getElementById('tokenPerSecond').innerHTML = costPerSecond;
+		  document.getElementById('current').innerHTML = "Campus view";
+		  document.getElementById('selectedContent').style.opacity='0';
+		  document.getElementById('selectedContent').style.animationName='mainContentAnimation';
+		  document.getElementById('selectedContent').style.animationDuration='0.5s';
+		  document.getElementById('selectedContent').style.opacity='1';
+
 		}
 
 		function cam2Selected(){
@@ -910,6 +1194,8 @@
 		  videoURL = "http://admin@117.17.158.187:63000/video.cgi";
 
 		  document.getElementById('tokenPerSecond').innerHTML = costPerSecond;
+		  document.getElementById('current').innerHTML = "Lab view";
+		  document.getElementById('selectedContent').style.opacity='0';
 		  document.getElementById('selectedContent').style.animationName='mainContentAnimation';
 		  document.getElementById('selectedContent').style.animationDuration='0.5s';
 		  document.getElementById('selectedContent').style.opacity='1';
@@ -955,5 +1241,50 @@
 		 
 		 input.onkeydown=input.onkeyup=input.onclick=eventHandler;
 		}
+		$('.btn-example').click(function(){
+        var $href = $(this).attr('href');
+        layer_popup($href);
+    });
+
+    $('.btn-example').click(function(){
+        var $href = $(this).attr('href');
+        layer_popup($href);
+    });
+	
+    function layer_popup(el){
+
+        var $el = $(el);		//레이어의 id를 $el 변수에 저장
+        var isDim = $el.prev().hasClass('dimBg');	//dimmed 레이어를 감지하기 위한 boolean 변수
+
+        isDim ? $('.dim-layer').fadeIn() : $el.fadeIn();
+
+        var $elWidth = ~~($el.outerWidth()),
+            $elHeight = ~~($el.outerHeight()),
+            docWidth = $(document).width(),
+            docHeight = $(document).height();
+
+        // 화면의 중앙에 레이어를 띄운다.
+        if ($elHeight < docHeight || $elWidth < docWidth) {
+            $el.css({
+                marginTop: -$elHeight /2,
+                marginLeft: -$elWidth/2
+            })
+        } else {
+            $el.css({top: 0, left: 0});
+        }
+
+        $el.find('a.btn-layerClose').click(function(){
+            isDim ? $('.dim-layer').fadeOut() : $el.fadeOut(); // 닫기 버튼을 클릭하면 레이어가 닫힌다.
+            return false;
+        });
+
+        $('.layer .dimBg').click(function(){
+            $('.dim-layer').fadeOut();
+            return false;
+        });
+
+    }
+      //# sourceURL=pen.js
+    
 	</script>
 </html>
