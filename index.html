@@ -250,12 +250,24 @@
 			  text-align: right;
 			}
 
-			.pop-layer, .pop-layer2, .pop-layer3 {
+			.pop-layer, .pop-layer2, {
 			  display: none;
 			  position: absolute;
 			  top: 50%;
 			  left: 50%;
-			  width: 640px;
+			  width: 600px;
+			  height: auto;
+			  background-color: #333333;
+			  border: 5px solid #fff;
+			  z-index: 10;
+			}
+			
+			.pop-layer3 {
+			  display: none;
+			  position: absolute;
+			  top: 50%;
+			  left: 50%;
+			  width: 680px;
 			  height: auto;
 			  background-color: #333333;
 			  border: 5px solid #fff;
@@ -497,7 +509,7 @@
 	<body>
 		<div id='container'>
 			<div id='header'>
-				<span id='title'>IoMT Camera service2</span>
+				<span id='title'>IoMT Camera service3</span>
 			</div>
 			<div id='content'>
 				<div class="menubar">
@@ -980,7 +992,7 @@
 			});
 		}
 		function watchVideo(){
-			document.getElementById("imageid").src=videoURL;
+			document.getElementById("screen").src=videoURL;
 			setTimeout(function() {
 				var $href = '#layer4';
 				fade_popup($href);
