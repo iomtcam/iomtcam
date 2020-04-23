@@ -218,8 +218,8 @@ App = {
 
 
 
-$(function() {
-  $(window).load(function() {
-    App.init();
-  });
-});
+//$(function() {
+//  $(window).load(function() {
+//    App.init();
+//  });
+//});
